@@ -5,7 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import Role from './Role';
 
 @Entity('users')
 class User {
@@ -23,6 +26,13 @@ class User {
 
   @Column()
   registry: string;
+
+  @Column()
+  role_id: number;
+
+  @ManyToOne(() => Role)
+  @JoinColumn({ name: 'role_id' })
+  role: Role;
 
   @Column()
   password_hash: string;
