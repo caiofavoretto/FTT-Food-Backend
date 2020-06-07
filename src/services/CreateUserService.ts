@@ -8,6 +8,7 @@ interface Request {
   name: string;
   last_name: string;
   email: string;
+  role_id: number;
   registry: string;
   password: string;
 }
@@ -17,6 +18,7 @@ class CreateUserService {
     name,
     last_name,
     email,
+    role_id,
     registry,
     password,
   }: Request): Promise<User> {
@@ -34,6 +36,7 @@ class CreateUserService {
       name,
       last_name,
       email,
+      role_id,
       registry,
       password_hash,
     });

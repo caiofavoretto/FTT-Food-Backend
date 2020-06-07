@@ -5,7 +5,7 @@ import CreateUserService from '../services/CreateUserService';
 const userRouter = Router();
 
 userRouter.post('/', async (request, response) => {
-  const { name, last_name, email, registry, password } = request.body;
+  const { name, last_name, email, role_id, registry, password } = request.body;
 
   const createUserService = new CreateUserService();
 
@@ -13,6 +13,7 @@ userRouter.post('/', async (request, response) => {
     name,
     last_name,
     email,
+    role_id,
     registry,
     password,
   });
