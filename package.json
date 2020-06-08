@@ -1,10 +1,7 @@
 {
-  "name": "tm-food",
+  "name": "tm-food-backend",
   "version": "1.0.0",
   "main": "index.js",
-<<<<<<< HEAD
-  "license": "MIT"
-=======
   "license": "MIT",
   "scripts": {
     "build": "tcs",
@@ -43,5 +40,4 @@
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.8.3"
   }
->>>>>>> develop
 }
