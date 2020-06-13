@@ -11,6 +11,7 @@ interface Request {
   role_id: number;
   registry: string;
   password: string;
+  avatarFileName: string;
 }
 
 class CreateUserService {
@@ -21,6 +22,7 @@ class CreateUserService {
     role_id,
     registry,
     password,
+    avatarFileName,
   }: Request): Promise<User> {
     const usersRepository = getRepository(User);
 
@@ -39,6 +41,7 @@ class CreateUserService {
       role_id,
       registry,
       password_hash,
+      avatar_url: avatarFileName,
     });
 
     await usersRepository.save(user);

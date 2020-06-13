@@ -10,7 +10,7 @@ import AppError from '../errors/AppError';
 const foodsRouter = Router();
 const upload = multer(uploadconfig);
 
-foodsRouter.post('/',upload.single('image'), async (request, response) => {
+foodsRouter.post('/', upload.single('image'), async (request, response) => {
   const { name, description } = request.body;
 
   const foodsRepository = getRepository(Food);
@@ -22,6 +22,8 @@ foodsRouter.post('/',upload.single('image'), async (request, response) => {
   });
 
   await foodsRepository.save(food);
+
+  food.image_url = `http://localhost:3333/files/${food.image_url}`;
 
   return response.json(food);
 });
