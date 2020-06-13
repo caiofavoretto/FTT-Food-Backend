@@ -25,9 +25,9 @@ attendanceRouter.get('/', async (request, response) => {
 
   const getAttendancesService = new GetAttendancesService();
 
-  const attendances = getAttendancesService.execute({
+  const attendances = await getAttendancesService.execute({
     user_id,
-    date: new Date(date),
+    date: date ? new Date(date) : null,
   });
 
   return response.json(attendances);

@@ -4,7 +4,7 @@ import Attendance from '../models/Attendance';
 
 interface Request {
   user_id: string;
-  date?: Date;
+  date: Date | null;
 }
 
 class GetAttendancesService {
@@ -14,7 +14,7 @@ class GetAttendancesService {
     let attendances: Attendance[];
 
     if (date) {
-      const initialDate = new Date(date);
+      const initialDate = date;
       initialDate.setHours(0);
       initialDate.setMinutes(0);
       initialDate.setSeconds(0);
