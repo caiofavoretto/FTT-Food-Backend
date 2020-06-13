@@ -1,9 +1,11 @@
 import { Router } from 'express';
 import multer from 'multer';
-import uploadconfig from '../config/upload';
-import UpdateFoodService from '../services/UpdateFoodService';
 import { getRepository } from 'typeorm';
+
 import { isUuid } from 'uuidv4';
+import uploadconfig from '../config/upload';
+
+import UpdateFoodService from '../services/UpdateFoodService';
 import Food from '../models/Food';
 import AppError from '../errors/AppError';
 
@@ -33,10 +35,19 @@ foodsRouter.get('/', async (request, response) => {
 
   const foods = await foodsRepository.find();
 
-  return response.json(foods);
+  const foodsSerialized = foods.map(food => {
+    return {
+      id: food.id,
+      name: food.name,
+      description: food.description,
+      image_url: `http://localhost:3333/files/${food.image_url}`,
+    };
+  });
+
+  return response.json(foodsSerialized);
 });
 
-foodsRouter.patch('/:id', async (request, response) => {
+foodsRouter.patch('/:id', upload.single('image'), async (request, response) => {
   const { id } = request.params;
 
   if (!isUuid(id)) throw new AppError('Id invalido');
@@ -45,12 +56,14 @@ foodsRouter.patch('/:id', async (request, response) => {
 
   const updateFoodService = new UpdateFoodService();
 
-  const food = updateFoodService.execute({
+  const food = await updateFoodService.execute({
     id,
     name,
     description,
-    imageFileName: request.file.filename
+    imageFileName: request.file.filename,
   });
+
+  food.image_url = `http://localhost:3333/files/${food.image_url}`;
 
   return response.json(food);
 });
