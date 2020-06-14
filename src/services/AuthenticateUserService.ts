@@ -7,40 +7,40 @@ import AppError from '../errors/AppError';
 
 import User from '../models/User';
 
-interface RequestDTO {
+interface Request {
   registry: string;
   password: string;
 }
 
-interface ResponseDTO {
+interface Response {
   user: User;
   token: string;
 }
 
 class AuthenticateUserService {
-  public async execute({
-    registry,
-    password,
-  }: RequestDTO): Promise<ResponseDTO> {
+  public async execute({ registry, password }: Request): Promise<Response> {
     const userRepository = getRepository(User);
 
     const user = await userRepository.findOne({
       where: { registry },
-      relations : ['role'],
+      relations: ['role'],
     });
 
     if (!user) {
-      throw new AppError('Incorrect registry / password combination.', 401);
+      throw new AppError('O registro e a senha não combinam.', 401);
     }
 
     const passwordMatch = await compare(password, user.password_hash);
 
     if (!passwordMatch) {
-      throw new AppError('Incorrect registry / password combination.', 401);
+      throw new AppError('O registro e a senha não combinam.', 401);
     }
 
-    if (user.role.description !== 'Funcionário'){
-      throw new AppError('only employees can access this platform', 401);
+    if (user.role.description !== 'Funcionário') {
+      throw new AppError(
+        'Apenas funcionários podem acessar esta plataforma.',
+        401
+      );
     }
 
     const { secret, expiresIn } = authConfig.jwt;

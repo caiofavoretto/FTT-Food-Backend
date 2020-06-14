@@ -16,6 +16,10 @@ sessionsRouter.post('/', async (request, response) => {
 
   delete user.password_hash;
 
+  if (user.avatar_url) {
+    user.avatar_url = `http://localhost:3333/files/${user.avatar_url}`;
+  }
+
   return response.json({ user, token });
 });
 

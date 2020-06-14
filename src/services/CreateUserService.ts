@@ -29,7 +29,7 @@ class CreateUserService {
     const userExists = await usersRepository.findOne({ where: { registry } });
 
     if (userExists) {
-      throw new AppError('User already exists');
+      throw new AppError('O registro de usuário já existe.');
     }
 
     const password_hash = await hash(password, 8);
