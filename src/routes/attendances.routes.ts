@@ -1,20 +1,18 @@
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
+import { parseISO } from 'date-fns';
+
 import GetAttendancesService from '../services/GetAttendancesService';
-import Attendance from '../models/Attendance';
+import CreateAttendanceSevice from '../services/CreateAttendanceService';
 import DeleteAttendanceService from '../services/DeleteAttendanceService';
 
 const attendanceRouter = Router();
 
 attendanceRouter.post('/', async (request, response) => {
   const user_id = request.user.id;
-  const attendanceRepository = getRepository(Attendance);
 
-  const attendance = attendanceRepository.create({
-    user_id,
-  });
+  const createAttendanceSevice = new CreateAttendanceSevice();
 
-  await attendanceRepository.save(attendance);
+  const attendance = await createAttendanceSevice.execute({ user_id });
 
   return response.json(attendance);
 });
@@ -27,7 +25,7 @@ attendanceRouter.get('/', async (request, response) => {
 
   const attendances = await getAttendancesService.execute({
     user_id,
-    date: date ? new Date(date) : null,
+    date: date ? parseISO(date) : null,
   });
 
   return response.json(attendances);
@@ -37,6 +35,7 @@ attendanceRouter.delete('/:id', async (request, response) => {
   const { id } = request.params;
 
   const deleteAttendanceService = new DeleteAttendanceService();
+
   deleteAttendanceService.execute(id);
 
   return response.send();

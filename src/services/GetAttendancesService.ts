@@ -1,5 +1,5 @@
 import { getRepository, Between } from 'typeorm';
-import { addDays } from 'date-fns';
+import { startOfDay, endOfDay } from 'date-fns';
 import Attendance from '../models/Attendance';
 
 interface Request {
@@ -14,17 +14,10 @@ class GetAttendancesService {
     let attendances: Attendance[];
 
     if (date) {
-      const initialDate = date;
-      initialDate.setHours(0);
-      initialDate.setMinutes(0);
-      initialDate.setSeconds(0);
-
-      const finalDate = addDays(initialDate, 1);
-
       attendances = await attendanceRepository.find({
         where: {
           user_id,
-          date: Between(initialDate, finalDate),
+          date: Between(startOfDay(date), endOfDay(date)),
         },
       });
     } else {

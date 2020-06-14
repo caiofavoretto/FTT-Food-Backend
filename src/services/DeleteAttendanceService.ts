@@ -10,8 +10,7 @@ class DeleteAttendanceService {
     const attendanceRepository = getRepository(Attendance);
     const attendanceExists = await attendanceRepository.findOne({ id });
 
-    if (!attendanceExists)
-      throw new AppError('Presença do usuário não encontrado', 404);
+    if (!attendanceExists) throw new AppError('Presença não encontrada.', 404);
 
     await attendanceRepository.remove(attendanceExists);
   }

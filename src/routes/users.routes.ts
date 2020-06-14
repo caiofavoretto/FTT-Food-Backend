@@ -10,6 +10,8 @@ const upload = multer(uploadconfig);
 userRouter.post('/', upload.single('avatar'), async (request, response) => {
   const { name, last_name, email, role_id, registry, password } = request.body;
 
+  const avatarFileName = request.file?.filename;
+
   const createUserService = new CreateUserService();
 
   const user = await createUserService.execute({
@@ -19,12 +21,14 @@ userRouter.post('/', upload.single('avatar'), async (request, response) => {
     role_id,
     registry,
     password,
-    avatarFileName: request.file.filename,
+    avatarFileName,
   });
 
   delete user.password_hash;
 
-  user.avatar_url = `http://localhost:3333/files/${user.avatar_url}`;
+  if (user.avatar_url) {
+    user.avatar_url = `http://localhost:3333/files/${user.avatar_url}`;
+  }
 
   return response.json(user);
 });

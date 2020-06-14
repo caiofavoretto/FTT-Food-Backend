@@ -25,7 +25,7 @@ export default class CrateAttendances1591997004323
           },
           {
             name: 'date',
-            type: 'date',
+            type: 'timestamp with time zone',
             default: 'now()',
           },
         ],

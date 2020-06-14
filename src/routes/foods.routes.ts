@@ -5,9 +5,11 @@ import { getRepository } from 'typeorm';
 import { isUuid } from 'uuidv4';
 import uploadconfig from '../config/upload';
 
-import UpdateFoodService from '../services/UpdateFoodService';
 import Food from '../models/Food';
 import AppError from '../errors/AppError';
+
+import UpdateFoodService from '../services/UpdateFoodService';
+import DeleteFoodService from '../services/DeleteFoodService';
 
 const foodsRouter = Router();
 const upload = multer(uploadconfig);
@@ -50,7 +52,9 @@ foodsRouter.get('/', async (request, response) => {
 foodsRouter.patch('/:id', upload.single('image'), async (request, response) => {
   const { id } = request.params;
 
-  if (!isUuid(id)) throw new AppError('Id invalido');
+  if (!isUuid(id)) {
+    throw new AppError('Id inválido');
+  }
 
   const { name, description } = request.body;
 
@@ -71,14 +75,13 @@ foodsRouter.patch('/:id', upload.single('image'), async (request, response) => {
 foodsRouter.delete('/:id', async (request, response) => {
   const { id } = request.params;
 
-  if (!isUuid(id)) throw new AppError('Id invalido');
+  if (!isUuid(id)) {
+    throw new AppError('Id inválido');
+  }
 
-  const foodsRepository = getRepository(Food);
-  const foodExists = await foodsRepository.findOne({ id });
+  const deleteFoodService = new DeleteFoodService();
 
-  if (!foodExists) throw new AppError('Comida não existente', 404);
-
-  await foodsRepository.remove(foodExists);
+  deleteFoodService.execute(id);
 
   return response.send();
 });
