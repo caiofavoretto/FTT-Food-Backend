@@ -1,18 +1,12 @@
 import { Router } from 'express';
-import multer from 'multer';
 import { getRepository } from 'typeorm';
-
 import { isUuid } from 'uuidv4';
-import uploadconfig from '../config/upload';
-
-import UpdateFoodService from '../services/UpdateFoodService';
 import Food from '../models/Food';
 import AppError from '../errors/AppError';
 
 const foodsRouter = Router();
-const upload = multer(uploadconfig);
 
-foodsRouter.post('/', upload.single('image'), async (request, response) => {
+foodsRouter.post('/', async (request, response) => {
   const { name, description } = request.body;
 
   const foodsRepository = getRepository(Food);
@@ -20,12 +14,9 @@ foodsRouter.post('/', upload.single('image'), async (request, response) => {
   const food = foodsRepository.create({
     name,
     description,
-    image_url: request.file.filename,
   });
 
   await foodsRepository.save(food);
-
-  food.image_url = `http://localhost:3333/files/${food.image_url}`;
 
   return response.json(food);
 });
@@ -35,37 +26,27 @@ foodsRouter.get('/', async (request, response) => {
 
   const foods = await foodsRepository.find();
 
-  const foodsSerialized = foods.map(food => {
-    return {
-      id: food.id,
-      name: food.name,
-      description: food.description,
-      image_url: `http://localhost:3333/files/${food.image_url}`,
-    };
-  });
-
-  return response.json(foodsSerialized);
+  return response.json(foods);
 });
 
-foodsRouter.patch('/:id', upload.single('image'), async (request, response) => {
+foodsRouter.patch('/:id', async (request, response) => {
   const { id } = request.params;
 
   if (!isUuid(id)) throw new AppError('Id invalido');
 
+  const foodsRepository = getRepository(Food);
+  const foodExists = await foodsRepository.findOne({ id });
+
+  if (!foodExists) throw new AppError('Comida não existente', 404);
+
   const { name, description } = request.body;
 
-  const updateFoodService = new UpdateFoodService();
+  foodExists.name = name;
+  foodExists.description = description;
 
-  const food = await updateFoodService.execute({
-    id,
-    name,
-    description,
-    imageFileName: request.file.filename,
-  });
+  await foodsRepository.save(foodExists);
 
-  food.image_url = `http://localhost:3333/files/${food.image_url}`;
-
-  return response.json(food);
+  return response.json(foodExists);
 });
 
 foodsRouter.delete('/:id', async (request, response) => {
