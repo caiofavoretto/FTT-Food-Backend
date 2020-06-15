@@ -1,7 +1,6 @@
 import { getRepository, In } from 'typeorm';
 import Meal from '../models/Meal';
 import Food from '../models/Food';
-import MealFoods from '../models/MealFoods';
 
 // import AppError from '../errors/AppError';
 
@@ -15,7 +14,6 @@ class CreateMealService {
   public async execute({ description, date, foods }: Request): Promise<Meal> {
     const mealsRepository = getRepository(Meal);
     const foodsRepository = getRepository(Food);
-    const mealFoodsRepository = getRepository(MealFoods);
 
     const foodEntities = await foodsRepository.find({
       where: {
@@ -28,20 +26,9 @@ class CreateMealService {
       date,
     });
 
-    foods.map(food => {
-      const mealFood = mealFoodsRepository.create({
-        food_id: food,
-        meal_id: meal.id,
-      });
-
-      mealFoodsRepository.save(mealFood);
-
-      return mealFood;
-    });
+    meal.foods = foodEntities;
 
     await mealsRepository.save(meal);
-
-    meal.foods = foodEntities;
 
     return meal;
   }

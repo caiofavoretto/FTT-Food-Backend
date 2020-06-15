@@ -26,7 +26,6 @@ class AuthenticateUserService {
 
     const user = await userRepository.findOne({
       where: { registry },
-      relations : ['role'],
     });
 
     if (!user) {
@@ -39,7 +38,7 @@ class AuthenticateUserService {
       throw new AppError('Incorrect registry / password combination.', 401);
     }
 
-    if (user.role.description !== 'Funcionário'){
+    if (user.role.description !== 'Funcionário') {
       throw new AppError('only employees can access this platform', 401);
     }
 

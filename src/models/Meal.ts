@@ -21,9 +21,10 @@ class Meal {
   @Column('timestamp with time zone')
   date: Date;
 
-  @ManyToMany(() => Food)
-  @JoinTable({ name: 'meal_foods' })
+  @ManyToMany(() => Food, { eager: true })
+  @JoinTable()
   foods: Food[];
+
   // @Column()
   // meal_type_id: string;
 
