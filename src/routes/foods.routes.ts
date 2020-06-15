@@ -9,6 +9,9 @@ const foodsRouter = Router();
 foodsRouter.post('/', async (request, response) => {
   const { name, description } = request.body;
 
+  console.log(name);
+  console.log(description);
+
   const foodsRepository = getRepository(Food);
 
   const food = foodsRepository.create({
