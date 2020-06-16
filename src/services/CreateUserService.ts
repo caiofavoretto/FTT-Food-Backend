@@ -11,6 +11,7 @@ interface Request {
   role_id: number;
   registry: string;
   password: string;
+  avatarFileName: string;
 }
 
 class CreateUserService {
@@ -21,13 +22,14 @@ class CreateUserService {
     role_id,
     registry,
     password,
+    avatarFileName,
   }: Request): Promise<User> {
     const usersRepository = getRepository(User);
 
     const userExists = await usersRepository.findOne({ where: { registry } });
 
     if (userExists) {
-      throw new AppError('User already exists');
+      throw new AppError('O registro de usuário já existe.');
     }
 
     const password_hash = await hash(password, 8);
@@ -39,6 +41,7 @@ class CreateUserService {
       role_id,
       registry,
       password_hash,
+      avatar_url: avatarFileName,
     });
 
     await usersRepository.save(user);

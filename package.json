@@ -7,7 +7,10 @@
     "build": "tcs",
     "dev:server": "ts-node-dev --inspect --transpileOnly --ignore-watch node_modules src/server.ts",
     "start": "ts-node src/index.ts",
-    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js"
+    "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
+    "seed:generate": "ts-node-dev ./node_modules/typeorm/cli.js migration:create -c seed",
+    "seed:run": "ts-node-dev ./node_modules/typeorm/cli.js migration:run -c seed",
+    "seed:revert": "ts-node-dev ./node_modules/typeorm/cli.js migration:revert -c seed"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -20,6 +23,7 @@
     "pg": "^8.0.3",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.24",
+    "typeorm-naming-strategies": "^1.1.0",
     "uuidv4": "^6.0.8"
   },
   "devDependencies": {
