@@ -17,6 +17,9 @@ const upload = multer(uploadconfig);
 foodsRouter.post('/', upload.single('image'), async (request, response) => {
   const { name, description } = request.body;
 
+  console.log(name);
+  console.log(description);
+
   const foodsRepository = getRepository(Food);
 
   const food = foodsRepository.create({
@@ -83,7 +86,7 @@ foodsRouter.delete('/:id', async (request, response) => {
 
   deleteFoodService.execute(id);
 
-  return response.send();
+  return response.status(204).send();
 });
 
 export default foodsRouter;

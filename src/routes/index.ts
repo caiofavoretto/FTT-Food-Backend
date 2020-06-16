@@ -2,16 +2,19 @@ import { Router } from 'express';
 
 import UserRouter from './users.routes';
 import FoodsRouter from './foods.routes';
+import MealsRouter from './meals.routes';
 import SessionsRouter from './sessions.routes';
 import AttendancesRouter from './attendances.routes';
 
-import ensureAuthenticated from '../middleware/ensureAuthenticated';
+import EnsureAuthenticated from '../middleware/ensureAuthenticated';
 
 const routes = Router();
 
 routes.use('/users', UserRouter);
-routes.use('/foods', ensureAuthenticated, FoodsRouter);
+routes.use('/foods', EnsureAuthenticated, FoodsRouter);
+routes.use('/meals', EnsureAuthenticated, MealsRouter);
+
 routes.use('/sessions', SessionsRouter);
-routes.use('/attendances', ensureAuthenticated, AttendancesRouter);
+routes.use('/attendances', EnsureAuthenticated, AttendancesRouter);
 
 export default routes;

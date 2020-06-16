@@ -23,7 +23,6 @@ class AuthenticateUserService {
 
     const user = await userRepository.findOne({
       where: { registry },
-      relations: ['role'],
     });
 
     if (!user) {

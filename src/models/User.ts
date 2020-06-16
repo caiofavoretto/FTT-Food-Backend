@@ -30,7 +30,7 @@ class User {
   @Column()
   role_id: number;
 
-  @ManyToOne(() => Role)
+  @ManyToOne(() => Role, { eager: true })
   @JoinColumn({ name: 'role_id' })
   role: Role;
 
