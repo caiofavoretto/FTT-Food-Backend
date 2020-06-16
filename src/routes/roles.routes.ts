@@ -12,4 +12,17 @@ rolesRouter.get('/', async (request, response) => {
   return response.json(roles);
 });
 
+rolesRouter.post('/', async (request, response) => {
+  const { description } = request.body;
+  const rolesRepository = getRepository(Role);
+
+  const role = rolesRepository.create({
+    description,
+  });
+
+  await rolesRepository.save(role);
+
+  return response.json(role);
+});
+
 export default rolesRouter;
