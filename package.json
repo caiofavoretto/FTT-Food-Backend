@@ -1,7 +1,7 @@
 {
   "name": "tm-food-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/server.js",
   "license": "MIT",
   "engines": {
     "node": "12.17.0",
