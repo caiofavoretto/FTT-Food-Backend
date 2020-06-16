@@ -1,2 +1,2 @@
-release: npm typeorm migration:run && npm seed:run
-web: npm start
+release: yarn typeorm migration:run && yarn seed:run
+web: yarn start
