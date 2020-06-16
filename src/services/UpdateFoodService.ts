@@ -36,7 +36,7 @@ class UpdateFoodService {
         foodExists.image_url
       );
 
-      const foodImageFileExists = await fs.promises.stat(foodImageFilePath);
+      const foodImageFileExists = fs.existsSync(foodImageFilePath);
 
       if (foodImageFileExists) {
         fs.promises.unlink(foodImageFilePath);
