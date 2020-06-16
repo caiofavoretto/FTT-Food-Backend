@@ -30,7 +30,7 @@ foodsRouter.post('/', upload.single('image'), async (request, response) => {
 
   await foodsRepository.save(food);
 
-  food.image_url = `http://localhost:3333/files/${food.image_url}`;
+  food.image_url = `${process.env.APPLICATION_URL}/files/${food.image_url}`;
 
   return response.json(food);
 });
@@ -45,7 +45,7 @@ foodsRouter.get('/', async (request, response) => {
       id: food.id,
       name: food.name,
       description: food.description,
-      image_url: `http://localhost:3333/files/${food.image_url}`,
+      image_url: `${process.env.APPLICATION_URL}/files/${food.image_url}`,
     };
   });
 
@@ -70,7 +70,7 @@ foodsRouter.patch('/:id', upload.single('image'), async (request, response) => {
     imageFileName: request.file.filename,
   });
 
-  food.image_url = `http://localhost:3333/files/${food.image_url}`;
+  food.image_url = `${process.env.APPLICATION_URL}/files/${food.image_url}`;
 
   return response.json(food);
 });
