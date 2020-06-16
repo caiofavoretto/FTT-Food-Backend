@@ -10,13 +10,12 @@ import DeleteMealService from '../services/DeleteMealService';
 const mealsRouter = Router();
 
 mealsRouter.post('/', async (request, response) => {
-  const { description, date, foods } = request.body;
+  const { description, foods } = request.body;
 
   const createMealService = new CreateMealService();
 
   const meal = await createMealService.execute({
     description,
-    date,
     foods,
   });
 
@@ -38,14 +37,14 @@ mealsRouter.patch('/:id', async (request, response) => {
     throw new AppError('Id inválido.');
   }
 
-  const { description, date } = request.body;
+  const { description, foods } = request.body;
 
   const updateMealService = new UpdateMealService();
 
   const meal = await updateMealService.execute({
     id,
     description,
-    date,
+    foods,
   });
 
   return response.json(meal);
