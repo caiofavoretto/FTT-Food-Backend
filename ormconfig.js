@@ -31,7 +31,7 @@ module.exports = [
     type: 'postgres',
     host: connectionOptions.host,
     port: connectionOptions.port,
-    username: connectionOptions.username,
+    username: connectionOptions.user,
     password: connectionOptions.password,
     database: connectionOptions.database,
     entities: [
