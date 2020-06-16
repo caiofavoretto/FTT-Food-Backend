@@ -7,8 +7,6 @@ const connectionOptions = PostgresConnectionStringParser.parse(
   `${process.env.DATABASE_URL}`
 );
 
-console.log(connectionOptions);
-
 module.exports = [
   {
     type: 'postgres',
