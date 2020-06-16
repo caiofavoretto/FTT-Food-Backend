@@ -1,2 +1,2 @@
-release: yarn typeormb migration:run && yarn seedb:run
+release: yarn typeormb migration:run
 web: npx tsc && node dist/server.js
