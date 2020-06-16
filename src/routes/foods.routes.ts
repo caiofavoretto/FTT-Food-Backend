@@ -1,12 +1,20 @@
 import { Router } from 'express';
+import multer from 'multer';
 import { getRepository } from 'typeorm';
+
 import { isUuid } from 'uuidv4';
+import uploadconfig from '../config/upload';
+
 import Food from '../models/Food';
 import AppError from '../errors/AppError';
 
-const foodsRouter = Router();
+import UpdateFoodService from '../services/UpdateFoodService';
+import DeleteFoodService from '../services/DeleteFoodService';
 
-foodsRouter.post('/', async (request, response) => {
+const foodsRouter = Router();
+const upload = multer(uploadconfig);
+
+foodsRouter.post('/', upload.single('image'), async (request, response) => {
   const { name, description } = request.body;
 
   console.log(name);
@@ -17,9 +25,12 @@ foodsRouter.post('/', async (request, response) => {
   const food = foodsRepository.create({
     name,
     description,
+    image_url: request.file.filename,
   });
 
   await foodsRepository.save(food);
+
+  food.image_url = `http://localhost:3333/files/${food.image_url}`;
 
   return response.json(food);
 });
@@ -29,40 +40,51 @@ foodsRouter.get('/', async (request, response) => {
 
   const foods = await foodsRepository.find();
 
-  return response.json(foods);
+  const foodsSerialized = foods.map(food => {
+    return {
+      id: food.id,
+      name: food.name,
+      description: food.description,
+      image_url: `http://localhost:3333/files/${food.image_url}`,
+    };
+  });
+
+  return response.json(foodsSerialized);
 });
 
-foodsRouter.patch('/:id', async (request, response) => {
+foodsRouter.patch('/:id', upload.single('image'), async (request, response) => {
   const { id } = request.params;
 
-  if (!isUuid(id)) throw new AppError('Id invalido');
-
-  const foodsRepository = getRepository(Food);
-  const foodExists = await foodsRepository.findOne({ id });
-
-  if (!foodExists) throw new AppError('Comida não existente', 404);
+  if (!isUuid(id)) {
+    throw new AppError('Id inválido');
+  }
 
   const { name, description } = request.body;
 
-  foodExists.name = name;
-  foodExists.description = description;
+  const updateFoodService = new UpdateFoodService();
 
-  await foodsRepository.save(foodExists);
+  const food = await updateFoodService.execute({
+    id,
+    name,
+    description,
+    imageFileName: request.file.filename,
+  });
 
-  return response.json(foodExists);
+  food.image_url = `http://localhost:3333/files/${food.image_url}`;
+
+  return response.json(food);
 });
 
 foodsRouter.delete('/:id', async (request, response) => {
   const { id } = request.params;
 
-  if (!isUuid(id)) throw new AppError('Id invalido');
+  if (!isUuid(id)) {
+    throw new AppError('Id inválido');
+  }
 
-  const foodsRepository = getRepository(Food);
-  const foodExists = await foodsRepository.findOne({ id });
+  const deleteFoodService = new DeleteFoodService();
 
-  if (!foodExists) throw new AppError('Comida não existente', 404);
-
-  await foodsRepository.remove(foodExists);
+  deleteFoodService.execute(id);
 
   return response.status(204).send();
 });
