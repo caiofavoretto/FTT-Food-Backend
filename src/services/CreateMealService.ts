@@ -6,12 +6,11 @@ import Food from '../models/Food';
 
 interface Request {
   description: string;
-  date: Date;
   foods: string[];
 }
 
 class CreateMealService {
-  public async execute({ description, date, foods }: Request): Promise<Meal> {
+  public async execute({ description, foods }: Request): Promise<Meal> {
     const mealsRepository = getRepository(Meal);
     const foodsRepository = getRepository(Food);
 
@@ -23,7 +22,6 @@ class CreateMealService {
 
     const meal = mealsRepository.create({
       description,
-      date,
     });
 
     meal.foods = foodEntities;
