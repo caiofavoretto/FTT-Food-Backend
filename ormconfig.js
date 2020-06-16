@@ -8,7 +8,7 @@ module.exports = [
     port: 5432,
     username: 'postgres',
     password: 'docker',
-    database: 'tm_food2',
+    database: 'tm_food',
     entities: ['./src/models/*.ts'],
     migrations: ['./src/database/migrations/*.ts'],
     namingStrategy: new SnakeNamingStrategy(),
@@ -23,7 +23,7 @@ module.exports = [
     port: 5432,
     username: 'postgres',
     password: 'docker',
-    database: 'tm_food2',
+    database: 'tm_food',
     entities: ['./src/models/*.ts'],
     migrations: ['./src/database/seeds/*.ts'],
     cli: {
