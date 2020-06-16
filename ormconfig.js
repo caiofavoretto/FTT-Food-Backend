@@ -15,11 +15,15 @@ module.exports = [
     username: connectionOptions.user,
     password: connectionOptions.password,
     database: connectionOptions.database,
-    entities: ['./src/models/*.ts'],
-    migrations: ['./src/database/migrations/*.ts'],
+    entities: [
+      `./${process.env.ENVIRONMENT_FOLDER}/models/*.${process.env.ENVIRONMENT_FILES}`,
+    ],
+    migrations: [
+      `./${process.env.ENVIRONMENT_FOLDER}/database/migrations/*.${process.env.ENVIRONMENT_FILES}`,
+    ],
     namingStrategy: new SnakeNamingStrategy(),
     cli: {
-      migrationsDir: './src/database/migrations',
+      migrationsDir: `./${process.env.ENVIRONMENT_FOLDER}/database/migrations`,
     },
   },
   {
@@ -30,10 +34,14 @@ module.exports = [
     username: connectionOptions.username,
     password: connectionOptions.password,
     database: connectionOptions.database,
-    entities: ['./src/models/*.ts'],
-    migrations: ['./src/database/seeds/*.ts'],
+    entities: [
+      `./${process.env.ENVIRONMENT_FOLDER}/models/*.${process.env.ENVIRONMENT_FILES}`,
+    ],
+    migrations: [
+      `./${process.env.ENVIRONMENT_FOLDER}/database/seeds/*.${process.env.ENVIRONMENT_FILES}`,
+    ],
     cli: {
-      migrationsDir: './src/database/seeds',
+      migrationsDir: `./${process.env.ENVIRONMENT_FOLDER}/database/seeds`,
     },
   },
 ];
