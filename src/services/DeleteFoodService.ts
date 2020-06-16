@@ -13,7 +13,7 @@ class DeleteFoodService {
     const foodExists = await foodsRepository.findOne({ id });
 
     if (!foodExists) {
-      throw new AppError('Comida não existente', 404);
+      throw new AppError('Comida não encontrada.', 404);
     }
 
     if (foodExists.image_url) {
@@ -22,7 +22,7 @@ class DeleteFoodService {
         foodExists.image_url
       );
 
-      const foodImageFileExists = await fs.promises.stat(foodImageFilePath);
+      const foodImageFileExists = fs.existsSync(foodImageFilePath);
 
       if (foodImageFileExists) {
         fs.promises.unlink(foodImageFilePath);
