@@ -8,9 +8,9 @@
     "yarn": "1.22.4"
   },
   "scripts": {
-    "build": "yarn tcs && node dist/server.js",
+    "build": "npx tcs",
     "dev:server": "ts-node-dev --inspect --transpileOnly --ignore-watch node_modules src/server.ts",
-    "start": "ts-node-dev src/server.ts",
+    "start": "node dist/server.js",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
     "seed:generate": "ts-node-dev ./node_modules/typeorm/cli.js migration:create -c seed",
     "seed:run": "ts-node-dev ./node_modules/typeorm/cli.js migration:run -c seed",
