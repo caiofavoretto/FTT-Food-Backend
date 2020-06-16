@@ -64,7 +64,7 @@ foodsRouter.delete('/:id', async (request, response) => {
 
   await foodsRepository.remove(foodExists);
 
-  return response.send();
+  return response.status(204).send();
 });
 
 export default foodsRouter;

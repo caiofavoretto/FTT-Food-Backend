@@ -5,6 +5,7 @@ import Meal from '../models/Meal';
 import AppError from '../errors/AppError';
 import UpdateMealService from '../services/UpdateMealService';
 import CreateMealService from '../services/CreateMealService';
+import DeleteMealService from '../services/DeleteMealService';
 
 const mealsRouter = Router();
 
@@ -48,6 +49,22 @@ mealsRouter.patch('/:id', async (request, response) => {
   });
 
   return response.json(meal);
+});
+
+mealsRouter.delete('/:id', async (request, response) => {
+  const { id } = request.params;
+
+  if (!isUuid(id)) {
+    throw new AppError('Id inválido.');
+  }
+
+  const deleteMealService = new DeleteMealService();
+
+  await deleteMealService.execute({
+    id,
+  });
+
+  return response.status(204).send();
 });
 
 export default mealsRouter;
