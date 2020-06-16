@@ -17,6 +17,9 @@ const upload = multer(uploadconfig);
 foodsRouter.post('/', upload.single('image'), async (request, response) => {
   const { name, description } = request.body;
 
+  console.log(name);
+  console.log(description);
+
   const foodsRepository = getRepository(Food);
 
   const food = foodsRepository.create({

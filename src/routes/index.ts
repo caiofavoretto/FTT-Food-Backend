@@ -14,11 +14,12 @@ const routes = Router();
 
 routes.use('/users', UserRouter);
 routes.use('/roles', RolesRouter);
+
 routes.use('/foods', EnsureAuthenticated, FoodsRouter);
 routes.use('/meals', EnsureAuthenticated, MealsRouter);
 routes.use('/menus', EnsureAuthenticated, MenusRouter);
+routes.use('/attendances', EnsureAuthenticated, AttendancesRouter);
 
 routes.use('/sessions', SessionsRouter);
-routes.use('/attendances', EnsureAuthenticated, AttendancesRouter);
 
 export default routes;
