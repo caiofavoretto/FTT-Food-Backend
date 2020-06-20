@@ -25,7 +25,11 @@ mealsRouter.post('/', async (request, response) => {
 mealsRouter.get('/', async (request, response) => {
   const mealsRepository = getRepository(Meal);
 
-  const meals = await mealsRepository.find();
+  const meals = await mealsRepository.find({
+    order: {
+      created_at: 'DESC',
+    },
+  });
 
   return response.json(meals);
 });

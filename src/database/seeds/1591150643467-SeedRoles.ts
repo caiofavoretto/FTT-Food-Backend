@@ -20,6 +20,6 @@ export default class SeedRoles1591150643467 implements MigrationInterface {
   }
 
   public async down(_: QueryRunner): Promise<void> {
-    // Nothing
+    // Do Nothing
   }
 }

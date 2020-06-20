@@ -10,6 +10,7 @@ import User from '../models/User';
 interface Request {
   registry: string;
   password: string;
+  type: 'mobile' | 'backoffice';
 }
 
 interface Response {
@@ -18,7 +19,11 @@ interface Response {
 }
 
 class AuthenticateUserService {
-  public async execute({ registry, password }: Request): Promise<Response> {
+  public async execute({
+    registry,
+    password,
+    type,
+  }: Request): Promise<Response> {
     const userRepository = getRepository(User);
 
     const user = await userRepository.findOne({
@@ -32,6 +37,13 @@ class AuthenticateUserService {
       );
     }
 
+    if (user.deleted_at) {
+      throw new AppError(
+        'Lamentamos, mas este usuário foi excluído. Solicite um novo cadastro.',
+        401
+      );
+    }
+
     const passwordMatch = await compare(password, user.password_hash);
 
     if (!passwordMatch) {
@@ -41,19 +53,31 @@ class AuthenticateUserService {
       );
     }
 
-    if (user.role.description !== 'Funcionário') {
+    if (type === 'backoffice' && user.role.description !== 'Funcionário') {
       throw new AppError(
         'Apenas funcionários podem acessar esta plataforma.',
         401
       );
     }
 
-    const { secret, expiresIn } = authConfig.jwt;
+    const { expiresIn } = authConfig.jwt;
 
-    const token = sign({}, secret, {
-      subject: user.id,
-      expiresIn,
-    });
+    let token;
+    if (type === 'backoffice') {
+      token = sign({}, `${process.env.SECRET_BACKOFFICE}`, {
+        subject: user.id,
+        expiresIn,
+      });
+    } else if (type === 'mobile') {
+      token = sign({}, `${process.env.SECRET}`, {
+        subject: user.id,
+        expiresIn,
+      });
+
+      console.log(authConfig.jwt);
+    } else {
+      throw new AppError('Algo deu errado na autenticação.', 401);
+    }
 
     return {
       user,
