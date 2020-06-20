@@ -26,13 +26,19 @@ class AuthenticateUserService {
     });
 
     if (!user) {
-      throw new AppError('O registro e a senha não combinam.', 401);
+      throw new AppError(
+        'Ocorreu um erro ao fazer login, cheque as credenciais.',
+        401
+      );
     }
 
     const passwordMatch = await compare(password, user.password_hash);
 
     if (!passwordMatch) {
-      throw new AppError('O registro e a senha não combinam.', 401);
+      throw new AppError(
+        'Ocorreu um erro ao fazer login, cheque as credenciais.',
+        401
+      );
     }
 
     if (user.role.description !== 'Funcionário') {
