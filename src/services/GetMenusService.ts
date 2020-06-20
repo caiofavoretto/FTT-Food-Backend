@@ -19,7 +19,11 @@ class GetMenusService {
         },
       });
     } else {
-      menus = await menusRepository.find();
+      menus = await menusRepository.find({
+        order: {
+          initial_date: 'DESC',
+        },
+      });
     }
 
     return menus;

@@ -17,20 +17,21 @@ const upload = multer(uploadconfig);
 foodsRouter.post('/', upload.single('image'), async (request, response) => {
   const { name, description } = request.body;
 
-  console.log(name);
-  console.log(description);
+  const imageFileName = request.file?.filename;
 
   const foodsRepository = getRepository(Food);
 
   const food = foodsRepository.create({
     name,
     description,
-    image_url: request.file.filename,
+    image_url: imageFileName,
   });
 
   await foodsRepository.save(food);
 
-  food.image_url = `${process.env.APPLICATION_URL}/files/${food.image_url}`;
+  if (food.image_url) {
+    food.image_url = `${process.env.APPLICATION_URL}/files/${food.image_url}`;
+  }
 
   return response.json(food);
 });
@@ -38,18 +39,25 @@ foodsRouter.post('/', upload.single('image'), async (request, response) => {
 foodsRouter.get('/', async (request, response) => {
   const foodsRepository = getRepository(Food);
 
-  const foods = await foodsRepository.find();
-
-  const foodsSerialized = foods.map(food => {
-    return {
-      id: food.id,
-      name: food.name,
-      description: food.description,
-      image_url: `${process.env.APPLICATION_URL}/files/${food.image_url}`,
-    };
+  const foods = await foodsRepository.find({
+    order: {
+      name: 'ASC',
+    },
   });
 
-  return response.json(foodsSerialized);
+  const serializedFoods = foods.map(food => {
+    const serialidezFood = food;
+
+    if (serialidezFood.image_url) {
+      serialidezFood.image_url = `${process.env.APPLICATION_URL}/files/${serialidezFood.image_url}`;
+    } else {
+      delete serialidezFood.image_url;
+    }
+
+    return serialidezFood;
+  });
+
+  return response.json(serializedFoods);
 });
 
 foodsRouter.patch('/:id', upload.single('image'), async (request, response) => {
@@ -61,16 +69,20 @@ foodsRouter.patch('/:id', upload.single('image'), async (request, response) => {
 
   const { name, description } = request.body;
 
+  const imageFileName = request.file?.filename;
+
   const updateFoodService = new UpdateFoodService();
 
   const food = await updateFoodService.execute({
     id,
     name,
     description,
-    imageFileName: request.file.filename,
+    imageFileName,
   });
 
-  food.image_url = `${process.env.APPLICATION_URL}/files/${food.image_url}`;
+  if (food.image_url) {
+    food.image_url = `${process.env.APPLICATION_URL}/files/${food.image_url}`;
+  }
 
   return response.json(food);
 });

@@ -9,6 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import Role from './Role';
+import Gender from './Gender';
 
 @Entity('users')
 class User {
@@ -30,9 +31,16 @@ class User {
   @Column()
   role_id: number;
 
+  @Column()
+  gender_id: number;
+
   @ManyToOne(() => Role, { eager: true })
   @JoinColumn({ name: 'role_id' })
   role: Role;
+
+  @ManyToOne(() => Gender, { eager: true })
+  @JoinColumn({ name: 'gender_id' })
+  gender: Gender;
 
   @Column()
   password_hash: string;
