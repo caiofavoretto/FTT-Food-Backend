@@ -26,12 +26,17 @@ class UpdateUserPasswordService {
     const passwordMatch = await compare(old_password, user.password_hash);
 
     if (!passwordMatch) {
-      throw new AppError('Sua senha está incorreta.', 401);
+      throw new AppError('Sua senha atual está incorreta.', 401);
+    }
+
+    if (password.length < 6) {
+      throw new AppError('A senha deve possuir mais de 6 caracteres.', 401);
     }
 
     const password_hash = await hash(password, 8);
 
     user.password_hash = password_hash;
+    user.updated_at = new Date();
 
     await usersRepository.save(user);
 

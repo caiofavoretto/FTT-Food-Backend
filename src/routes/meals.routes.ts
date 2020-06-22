@@ -31,7 +31,19 @@ mealsRouter.get('/', async (request, response) => {
     },
   });
 
-  return response.json(meals);
+  const serializedMeals = meals.map(meal => {
+    const serializedMeal = meal;
+    serializedMeal.rating =
+      serializedMeal.ratings.reduce((accumulator, current) => {
+        return accumulator + current.grade;
+      }, 0) / serializedMeal.ratings.length;
+
+    delete serializedMeal.ratings;
+
+    return serializedMeal;
+  });
+
+  return response.json(serializedMeals);
 });
 
 mealsRouter.patch('/:id', async (request, response) => {
@@ -51,7 +63,15 @@ mealsRouter.patch('/:id', async (request, response) => {
     foods,
   });
 
-  return response.json(meal);
+  const serializedMeal = meal;
+  serializedMeal.rating =
+    serializedMeal.ratings.reduce((accumulator, current) => {
+      return accumulator + current.grade;
+    }, 0) / serializedMeal.ratings.length;
+
+  delete serializedMeal.ratings;
+
+  return response.json(serializedMeal);
 });
 
 mealsRouter.delete('/:id', async (request, response) => {

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
-import { getRepository } from 'typeorm';
+import { getRepository, Raw } from 'typeorm';
 
 import { isUuid } from 'uuidv4';
 import uploadconfig from '../config/upload';
@@ -11,39 +11,61 @@ import AppError from '../errors/AppError';
 import UpdateFoodService from '../services/UpdateFoodService';
 import DeleteFoodService from '../services/DeleteFoodService';
 
+import EnsureAuthenticated from '../middleware/ensureAuthenticated';
+import EnsureEmployeeAuthenticated from '../middleware/ensureEmployeeAuthenticated';
+
 const foodsRouter = Router();
 const upload = multer(uploadconfig);
 
-foodsRouter.post('/', upload.single('image'), async (request, response) => {
-  const { name, description } = request.body;
+foodsRouter.post(
+  '/',
+  EnsureEmployeeAuthenticated,
+  upload.single('image'),
+  async (request, response) => {
+    const { name, description } = request.body;
 
-  const imageFileName = request.file?.filename;
+    const imageFileName = request.file?.filename;
 
-  const foodsRepository = getRepository(Food);
+    const foodsRepository = getRepository(Food);
 
-  const food = foodsRepository.create({
-    name,
-    description,
-    image_url: imageFileName,
-  });
+    const food = foodsRepository.create({
+      name,
+      description,
+      image_url: imageFileName,
+    });
 
-  await foodsRepository.save(food);
+    await foodsRepository.save(food);
 
-  if (food.image_url) {
-    food.image_url = `${process.env.APPLICATION_URL}/files/${food.image_url}`;
+    if (food.image_url) {
+      food.image_url = `${process.env.APPLICATION_URL}/files/${food.image_url}`;
+    }
+
+    return response.json(food);
   }
+);
 
-  return response.json(food);
-});
-
-foodsRouter.get('/', async (request, response) => {
+foodsRouter.get('/', EnsureAuthenticated, async (request, response) => {
   const foodsRepository = getRepository(Food);
+  const { name } = request.query;
 
-  const foods = await foodsRepository.find({
-    order: {
-      name: 'ASC',
-    },
-  });
+  let foods: Food[];
+
+  if (name) {
+    foods = await foodsRepository.find({
+      where: {
+        name: Raw(alias => `${alias} ILIKE '%${name}%'`),
+      },
+      order: {
+        name: 'ASC',
+      },
+    });
+  } else {
+    foods = await foodsRepository.find({
+      order: {
+        name: 'ASC',
+      },
+    });
+  }
 
   const serializedFoods = foods.map(food => {
     const serialidezFood = food;
@@ -60,45 +82,54 @@ foodsRouter.get('/', async (request, response) => {
   return response.json(serializedFoods);
 });
 
-foodsRouter.patch('/:id', upload.single('image'), async (request, response) => {
-  const { id } = request.params;
+foodsRouter.patch(
+  '/:id',
+  EnsureEmployeeAuthenticated,
+  upload.single('image'),
+  async (request, response) => {
+    const { id } = request.params;
 
-  if (!isUuid(id)) {
-    throw new AppError('Id inválido');
+    if (!isUuid(id)) {
+      throw new AppError('Id inválido');
+    }
+
+    const { name, description } = request.body;
+
+    const imageFileName = request.file?.filename;
+
+    const updateFoodService = new UpdateFoodService();
+
+    const food = await updateFoodService.execute({
+      id,
+      name,
+      description,
+      imageFileName,
+    });
+
+    if (food.image_url) {
+      food.image_url = `${process.env.APPLICATION_URL}/files/${food.image_url}`;
+    }
+
+    return response.json(food);
   }
+);
 
-  const { name, description } = request.body;
+foodsRouter.delete(
+  '/:id',
+  EnsureEmployeeAuthenticated,
+  async (request, response) => {
+    const { id } = request.params;
 
-  const imageFileName = request.file?.filename;
+    if (!isUuid(id)) {
+      throw new AppError('Id inválido');
+    }
 
-  const updateFoodService = new UpdateFoodService();
+    const deleteFoodService = new DeleteFoodService();
 
-  const food = await updateFoodService.execute({
-    id,
-    name,
-    description,
-    imageFileName,
-  });
+    deleteFoodService.execute(id);
 
-  if (food.image_url) {
-    food.image_url = `${process.env.APPLICATION_URL}/files/${food.image_url}`;
+    return response.status(204).send();
   }
-
-  return response.json(food);
-});
-
-foodsRouter.delete('/:id', async (request, response) => {
-  const { id } = request.params;
-
-  if (!isUuid(id)) {
-    throw new AppError('Id inválido');
-  }
-
-  const deleteFoodService = new DeleteFoodService();
-
-  deleteFoodService.execute(id);
-
-  return response.status(204).send();
-});
+);
 
 export default foodsRouter;

@@ -46,6 +46,7 @@ class UpdateFoodService {
     }
 
     foodExists.image_url = imageFileName;
+    foodExists.updated_at = new Date();
 
     await foodsRepository.save(foodExists);
 

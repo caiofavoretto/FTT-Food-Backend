@@ -22,6 +22,7 @@ class UpdateUserEmailService {
     }
 
     user.email = email;
+    user.updated_at = new Date();
 
     await usersRepository.save(user);
 
