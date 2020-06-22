@@ -27,6 +27,10 @@ class CreateRatingService {
       throw new AppError('Refeição não encontrada.');
     }
 
+    if (grade < 1 || grade > 5) {
+      throw new AppError('A nota da avaliação deve estar entre 1 e 5.');
+    }
+
     const rating = ratingsRepository.create({
       user_id,
       meal_id,

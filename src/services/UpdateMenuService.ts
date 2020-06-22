@@ -1,6 +1,7 @@
-import { getRepository, Between, Equal } from 'typeorm';
+import { getRepository, Between, Equal, Not, In } from 'typeorm';
 import { differenceInCalendarDays } from 'date-fns';
 import Menu from '../models/Menu';
+import Meal from '../models/Meal';
 
 import AppError from '../errors/AppError';
 
@@ -9,11 +10,11 @@ interface Request {
   description: string;
   initial_date: Date;
   end_date: Date;
-  monday_meal_id: string;
-  tuesday_meal_id: string;
-  wednesday_meal_id: string;
-  thursday_meal_id: string;
-  friday_meal_id: string;
+  monday_meal_id: string | null;
+  tuesday_meal_id: string | null;
+  wednesday_meal_id: string | null;
+  thursday_meal_id: string | null;
+  friday_meal_id: string | null;
 }
 
 class UpdateMenuService {
@@ -29,9 +30,9 @@ class UpdateMenuService {
     friday_meal_id,
   }: Request): Promise<Menu> {
     const menusRepository = getRepository(Menu);
-    const menuExists = await menusRepository.findOne({ id });
+    const menu = await menusRepository.findOne({ id });
 
-    if (!menuExists) {
+    if (!menu) {
       throw new AppError('Menu não encontrado.', 404);
     }
 
@@ -47,15 +48,19 @@ class UpdateMenuService {
       where: [
         {
           initial_date: Between(initial_date, end_date),
+          id: Not(Equal(id)),
         },
         {
           end_date: Between(initial_date, end_date),
+          id: Not(Equal(id)),
         },
         {
           initial_date: Equal(initial_date),
+          id: Not(Equal(id)),
         },
         {
           end_date: Equal(end_date),
+          id: Not(Equal(id)),
         },
       ],
     });
@@ -66,18 +71,64 @@ class UpdateMenuService {
       );
     }
 
-    menuExists.description = description;
-    menuExists.initial_date = initial_date;
-    menuExists.end_date = end_date;
-    menuExists.monday_meal_id = monday_meal_id;
-    menuExists.tuesday_meal_id = tuesday_meal_id;
-    menuExists.wednesday_meal_id = wednesday_meal_id;
-    menuExists.thursday_meal_id = thursday_meal_id;
-    menuExists.friday_meal_id = friday_meal_id;
+    const mealsRepository = getRepository(Meal);
 
-    await menusRepository.save(menuExists);
+    menu.description = description;
+    menu.initial_date = initial_date;
+    menu.end_date = end_date;
 
-    return menuExists;
+    const mealIds = [
+      monday_meal_id,
+      tuesday_meal_id,
+      wednesday_meal_id,
+      thursday_meal_id,
+      friday_meal_id,
+    ];
+
+    const meals = await mealsRepository.find({
+      where: {
+        id: In(mealIds),
+      },
+    });
+
+    if (monday_meal_id) {
+      menu.monday_meal = meals.find(meal => meal.id === monday_meal_id) || null;
+    } else {
+      menu.monday_meal = null;
+    }
+
+    if (tuesday_meal_id) {
+      menu.tuesday_meal =
+        meals.find(meal => meal.id === tuesday_meal_id) || null;
+    } else {
+      menu.tuesday_meal = null;
+    }
+
+    if (wednesday_meal_id) {
+      menu.wednesday_meal =
+        meals.find(meal => meal.id === wednesday_meal_id) || null;
+    } else {
+      menu.wednesday_meal = null;
+    }
+
+    if (thursday_meal_id) {
+      menu.thursday_meal =
+        meals.find(meal => meal.id === thursday_meal_id) || null;
+    } else {
+      menu.thursday_meal = null;
+    }
+
+    if (friday_meal_id) {
+      menu.friday_meal = meals.find(meal => meal.id === friday_meal_id) || null;
+    } else {
+      menu.friday_meal = null;
+    }
+
+    menu.updated_at = new Date();
+
+    await menusRepository.save(menu);
+
+    return menu;
   }
 }
 
