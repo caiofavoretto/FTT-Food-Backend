@@ -24,39 +24,39 @@ class Menu {
   end_date: Date;
 
   @Column()
-  monday_meal_id: string;
+  monday_meal_id: string | null;
 
   @ManyToOne(() => Meal, { eager: true })
   @JoinColumn({ name: 'monday_meal_id' })
-  monday_meal: Meal;
+  monday_meal: Meal | null;
 
   @Column()
-  tuesday_meal_id: string;
+  tuesday_meal_id: string | null;
 
   @ManyToOne(() => Meal, { eager: true })
   @JoinColumn({ name: 'tuesday_meal_id' })
-  tuesday_meal: Meal;
+  tuesday_meal: Meal | null;
 
   @Column()
-  wednesday_meal_id: string;
+  wednesday_meal_id: string | null;
 
   @ManyToOne(() => Meal, { eager: true })
   @JoinColumn({ name: 'wednesday_meal_id' })
-  wednesday_meal: Meal;
+  wednesday_meal: Meal | null;
 
   @Column()
-  thursday_meal_id: string;
+  thursday_meal_id: string | null;
 
   @ManyToOne(() => Meal, { eager: true })
   @JoinColumn({ name: 'thursday_meal_id' })
-  thursday_meal: Meal;
+  thursday_meal: Meal | null;
 
   @Column()
-  friday_meal_id: string;
+  friday_meal_id: string | null;
 
   @ManyToOne(() => Meal, { eager: true })
   @JoinColumn({ name: 'friday_meal_id' })
-  friday_meal: Meal;
+  friday_meal: Meal | null;
 
   @CreateDateColumn()
   created_at: Date;

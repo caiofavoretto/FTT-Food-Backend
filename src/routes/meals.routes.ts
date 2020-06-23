@@ -72,6 +72,14 @@ mealsRouter.get('/', async (request, response) => {
     if (serializedMeal.image_url) {
       serializedMeal.image_url = `${process.env.APPLICATION_URL}/files/${serializedMeal.image_url}`;
     }
+
+    serializedMeal.rating =
+      serializedMeal.ratings.reduce((accumulator, current) => {
+        return accumulator + current.grade;
+      }, 0) / serializedMeal.ratings.length;
+
+    delete serializedMeal.ratings;
+
     return serializedMeal;
   });
 
@@ -116,6 +124,15 @@ mealsRouter.patch('/:id', upload.single('image'), async (request, response) => {
   }
 
   return response.json(meal);
+
+  serializedMeal.rating =
+    serializedMeal.ratings.reduce((accumulator, current) => {
+      return accumulator + current.grade;
+    }, 0) / serializedMeal.ratings.length;
+
+  delete serializedMeal.ratings;
+
+  return response.json(serializedMeal);
 });
 
 mealsRouter.delete('/:id', async (request, response) => {

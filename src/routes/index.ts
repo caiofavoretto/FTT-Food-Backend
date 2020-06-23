@@ -22,7 +22,7 @@ routes.use('/attendances', EnsureAuthenticated, AttendancesRouter);
 routes.use('/ratings', EnsureAuthenticated, RatingRouter);
 
 routes.use('/foods', FoodsRouter);
-routes.use('/meals', MealsRouter);
+routes.use('/meals', EnsureEmployeeAuthenticated, MealsRouter);
 routes.use('/menus', MenusRouter);
 
 routes.use('/sessions', SessionsRouter);

@@ -24,9 +24,9 @@ class UpdateMealService {
   }: Request): Promise<Meal> {
     const mealsRepository = getRepository(Meal);
 
-    const mealExists = await mealsRepository.findOne({ id });
+    const meal = await mealsRepository.findOne({ id });
 
-    if (!mealExists) {
+    if (!meal) {
       throw new AppError('Refeição não encontrada.', 404);
     }
 
@@ -42,13 +42,14 @@ class UpdateMealService {
       },
     });
 
-    mealExists.description = description;
-    mealExists.foods = foodEntities;
+    meal.description = description;
+    meal.foods = foodEntities;
+    meal.updated_at = new Date();
 
-    if (mealExists.image_url) {
+    if (meal.image_url) {
       const mealImageFilePath = path.join(
         uploadConfig.directory,
-        mealExists.image_url
+        meal.image_url
       );
 
       const mealImageFileExists = fs.existsSync(mealImageFilePath);
@@ -58,11 +59,11 @@ class UpdateMealService {
       }
     }
 
-    mealExists.image_url = imageFileName;
+    meal.image_url = imageFileName;
 
-    await mealsRepository.save(mealExists);
+    await mealsRepository.save(meal);
 
-    return mealExists;
+    return meal;
   }
 }
 

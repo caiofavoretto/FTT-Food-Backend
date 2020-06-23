@@ -38,6 +38,7 @@ class UpdateUserAvatarService {
     }
 
     user.avatar_url = avatarFileName;
+    user.updated_at = new Date();
 
     await usersRepository.save(user);
 
