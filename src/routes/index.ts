@@ -9,13 +9,15 @@ import MenusRouter from './menus.routes';
 import SessionsRouter from './sessions.routes';
 import AttendancesRouter from './attendances.routes';
 import RatingRouter from './ratings.routes';
+import ProfileRouter from './profile.routes';
 
 import EnsureAuthenticated from '../middleware/ensureAuthenticated';
 import EnsureEmployeeAuthenticated from '../middleware/ensureEmployeeAuthenticated';
 
 const routes = Router();
 
-routes.use('/users', UserRouter);
+routes.use('/users', EnsureAuthenticated, UserRouter);
+routes.use('profiles', EnsureAuthenticated, ProfileRouter);
 routes.use('/roles', EnsureEmployeeAuthenticated, RolesRouter);
 routes.use('/genders', EnsureEmployeeAuthenticated, GendersRouter);
 routes.use('/attendances', EnsureAuthenticated, AttendancesRouter);
