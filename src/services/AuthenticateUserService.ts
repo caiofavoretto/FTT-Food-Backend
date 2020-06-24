@@ -73,8 +73,6 @@ class AuthenticateUserService {
         subject: user.id,
         expiresIn,
       });
-
-      console.log(authConfig.jwt);
     } else {
       throw new AppError('Algo deu errado na autenticação.', 401);
     }
