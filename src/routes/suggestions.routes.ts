@@ -1,11 +1,14 @@
 import { Router } from 'express';
 import { getRepository, Between } from 'typeorm';
 import { startOfDay, endOfDay } from 'date-fns';
+import { isUuid } from 'uuidv4';
+
 import CreateSuggestionService from '../services/CreateSuggestionService';
 import EnsureEmployeeAuthenticated from '../middleware/ensureEmployeeAuthenticated';
 import EnsureAuthenticated from '../middleware/ensureAuthenticated';
 
 import Suggestion from '../models/Suggestion';
+import AppError from '../errors/AppError';
 
 const suggestionRouter = Router();
 
@@ -43,6 +46,10 @@ suggestionRouter.get(
 suggestionRouter.post('/', EnsureAuthenticated, async (request, response) => {
   const { food_id } = request.body;
   const user_id = request.user.id;
+
+  if (!isUuid(food_id)) {
+    throw new AppError('Comida não encontrada.');
+  }
 
   const createSuggestion = new CreateSuggestionService();
 

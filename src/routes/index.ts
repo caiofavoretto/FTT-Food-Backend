@@ -22,6 +22,7 @@ routes.use('profiles', EnsureAuthenticated, ProfileRouter);
 routes.use('/roles', EnsureEmployeeAuthenticated, RolesRouter);
 routes.use('/genders', EnsureEmployeeAuthenticated, GendersRouter);
 routes.use('/attendances', EnsureAuthenticated, AttendancesRouter);
+
 routes.use('/ratings', EnsureAuthenticated, RatingRouter);
 routes.use('/suggestions', SuggestionRouter);
 

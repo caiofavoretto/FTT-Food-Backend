@@ -21,17 +21,12 @@ class CreateSuggestionService {
 
     const suggestionRepository = getRepository(Suggestion);
 
-    console.log(startOfDay(new Date()));
-    console.log(endOfDay(new Date()));
-
     const suggestionExist = await suggestionRepository.findOne({
       where: {
         user_id,
         created_at: Between(startOfDay(new Date()), endOfDay(new Date())),
       },
     });
-
-    console.log(suggestionExist);
 
     if (suggestionExist) {
       throw new AppError('Você só pode sugerir uma comida por dia.');
