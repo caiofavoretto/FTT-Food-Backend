@@ -123,8 +123,6 @@ mealsRouter.patch('/:id', upload.single('image'), async (request, response) => {
     serializedMeal.image_url = `${process.env.APPLICATION_URL}/files/${serializedMeal.image_url}`;
   }
 
-  return response.json(meal);
-
   serializedMeal.rating =
     serializedMeal.ratings.reduce((accumulator, current) => {
       return accumulator + current.grade;

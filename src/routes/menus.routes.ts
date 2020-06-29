@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { parseISO } from 'date-fns';
+import { addDays, parseISO } from 'date-fns';
 import { isUuid } from 'uuidv4';
 import AppError from '../errors/AppError';
 
@@ -10,6 +10,7 @@ import GetMenusService from '../services/GetMenusService';
 
 import EnsureAuthenticated from '../middleware/ensureAuthenticated';
 import EnsureEmployeeAuthenticated from '../middleware/ensureEmployeeAuthenticated';
+import serializeMeal from '../utils/serializeMeal';
 
 const menusRouter = Router();
 
@@ -48,13 +49,63 @@ menusRouter.post(
 menusRouter.get('/', EnsureAuthenticated, async (request, response) => {
   const date = request.query.date as string;
 
+  const user_id = request.user.id;
+
   const getMenusService = new GetMenusService();
 
   const menus = await getMenusService.execute({
     date: date ? parseISO(date) : null,
   });
 
-  return response.json(menus);
+  const serializedmenusPromise = menus.map(async menu => {
+    const serializedMenu = menu;
+
+    if (serializedMenu.monday_meal) {
+      serializedMenu.monday_meal = await serializeMeal({
+        meal: serializedMenu.monday_meal,
+        date: serializedMenu.initial_date,
+        user_id,
+      });
+    }
+
+    if (serializedMenu.tuesday_meal) {
+      serializedMenu.tuesday_meal = await serializeMeal({
+        meal: serializedMenu.tuesday_meal,
+        date: addDays(serializedMenu.initial_date, 1),
+        user_id,
+      });
+    }
+
+    if (serializedMenu.wednesday_meal) {
+      serializedMenu.wednesday_meal = await serializeMeal({
+        meal: serializedMenu.wednesday_meal,
+        date: addDays(serializedMenu.initial_date, 2),
+        user_id,
+      });
+    }
+
+    if (serializedMenu.thursday_meal) {
+      serializedMenu.thursday_meal = await serializeMeal({
+        meal: serializedMenu.thursday_meal,
+        date: addDays(serializedMenu.initial_date, 3),
+        user_id,
+      });
+    }
+
+    if (serializedMenu.friday_meal) {
+      serializedMenu.friday_meal = await serializeMeal({
+        meal: serializedMenu.friday_meal,
+        date: addDays(serializedMenu.initial_date, 4),
+        user_id,
+      });
+    }
+
+    return serializedMenu;
+  });
+
+  const serializedmenus = await Promise.all(serializedmenusPromise);
+
+  return response.json(serializedmenus);
 });
 
 menusRouter.patch(

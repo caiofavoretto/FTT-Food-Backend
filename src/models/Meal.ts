@@ -37,6 +37,14 @@ class Meal {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  dayOfTheWeek: string;
+
+  date: string;
+
+  today: boolean;
+
+  attendant: string;
 }
 
 export default Meal;
