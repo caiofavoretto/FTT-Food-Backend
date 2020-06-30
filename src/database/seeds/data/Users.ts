@@ -5,7 +5,7 @@ interface UserDTO {
   registry: string;
   role_id: number;
   gender_id: number;
-  password_hash: string;
+  password: string;
 }
 
 const UserData: UserDTO[] = [
@@ -16,7 +16,7 @@ const UserData: UserDTO[] = [
     registry: 'admin',
     role_id: 3,
     gender_id: 1,
-    password_hash: 'tmfood',
+    password: `${process.env.ADMIN_PASSWORD}`,
   },
 ];
 
