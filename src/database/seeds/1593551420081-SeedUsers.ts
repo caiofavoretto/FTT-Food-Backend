@@ -1,4 +1,6 @@
 import { MigrationInterface, QueryRunner, getRepository } from 'typeorm';
+import { hash } from 'bcryptjs';
+
 import UserData from './data/Users';
 import User from '../../models/User';
 import Role from '../../models/Role';
@@ -25,7 +27,14 @@ export default class SeedUsers1593551420081 implements MigrationInterface {
           parsedUser.role_id = roleEmployee || 1;
         }
 
-        const newUser = usersRepository.create(parsedUser);
+        const password_hash = await hash(parsedUser.password, 8);
+
+        delete parsedUser.password;
+
+        const newUser = usersRepository.create({
+          ...parsedUser,
+          password_hash,
+        });
 
         const userCreated = await usersRepository.save(newUser);
 
