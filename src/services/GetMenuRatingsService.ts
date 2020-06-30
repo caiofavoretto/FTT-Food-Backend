@@ -10,17 +10,15 @@ interface Request {
   meal_id: string;
   menu_id: string;
   date: Date;
-  grade: number;
 }
 
-class CreateRatingService {
+class GetMenuRatingService {
   public async execute({
     user_id,
     meal_id,
     menu_id,
     date,
-    grade,
-  }: Request): Promise<Rating> {
+  }: Request): Promise<number> {
     const ratingsRepository = getRepository(Rating);
     const usersRepository = getRepository(User);
     const mealsRepository = getRepository(Meal);
@@ -41,25 +39,20 @@ class CreateRatingService {
     const menuExist = await menusRepository.findOne(menu_id);
 
     if (!menuExist) {
-      throw new AppError('Menu não encontrado.');
+      throw new AppError('Cardápio não encontrado.');
     }
 
-    if (grade < 1 || grade > 5) {
-      throw new AppError('A nota da avaliação deve estar entre 1 e 5.');
-    }
-
-    const rating = ratingsRepository.create({
-      user_id,
-      meal_id,
-      menu_id,
-      date,
-      grade,
+    const rating = await ratingsRepository.findOne({
+      where: {
+        user_id,
+        menu_id,
+        meal_id,
+        date,
+      },
     });
 
-    await ratingsRepository.save(rating);
-
-    return rating;
+    return rating?.grade || 0;
   }
 }
 
-export default CreateRatingService;
+export default GetMenuRatingService;

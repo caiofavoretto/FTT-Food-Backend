@@ -1,10 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import Meal from './Meal';
 
 @Entity('ratings')
@@ -21,11 +15,14 @@ class Rating {
   @Column()
   meal_id: string;
 
+  @Column()
+  menu_id: string;
+
   @ManyToOne(() => Meal, meal => meal.ratings)
   meal: Meal;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @Column('timestamp with time zone')
+  date: Date;
 }
 
 export default Rating;

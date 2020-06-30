@@ -1,4 +1,6 @@
 import { getRepository, In } from 'typeorm';
+import { isUuid } from 'uuidv4';
+
 import Meal from '../models/Meal';
 import Food from '../models/Food';
 import AppError from '../errors/AppError';
@@ -22,6 +24,12 @@ class CreateMealService {
     if (!foods.length) {
       throw new AppError('Informe ao menos uma comida.');
     }
+
+    foods.forEach(food => {
+      if (!isUuid(food)) {
+        throw new AppError('Uma das comidas informadas não é válida.');
+      }
+    });
 
     const foodsRepository = getRepository(Food);
 

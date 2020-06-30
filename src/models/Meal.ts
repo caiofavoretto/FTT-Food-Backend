@@ -45,6 +45,8 @@ class Meal {
   today: boolean;
 
   attendant: string;
+
+  rated: number | null;
 }
 
 export default Meal;

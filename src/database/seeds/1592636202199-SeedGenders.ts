@@ -8,10 +8,10 @@ export default class SeedGenders1592636202199 implements MigrationInterface {
 
     const genders = await genderRepository.find();
 
-    const genderExist = genders.map(gender => gender.description);
+    const gendersExist = genders.map(gender => gender.description);
 
-    GenderData.forEach(async gender => {
-      if (!genderExist.includes(gender.description)) {
+    GenderData.map(async gender => {
+      if (!gendersExist.includes(gender.description)) {
         const newGender = genderRepository.create(gender);
 
         await genderRepository.save(newGender);

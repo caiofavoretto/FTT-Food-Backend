@@ -3,6 +3,7 @@ import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
 import GetAttendancesService from '../services/GetAttendancesService';
+import GetMenuRatingsService from '../services/GetMenuRatingsService';
 
 import Meal from '../models/Meal';
 
@@ -10,12 +11,14 @@ interface Params {
   meal: Meal;
   date: Date;
   user_id: string;
+  menu_id: string;
 }
 
 export default async function serializeMeal({
   meal,
   date,
   user_id,
+  menu_id,
 }: Params): Promise<Meal> {
   const serializedMeal = meal;
 
@@ -46,6 +49,7 @@ export default async function serializeMeal({
     serializedMeal.today = true;
   }
 
+  // Serialize attendance
   const getAttendancesService = new GetAttendancesService();
 
   const attendant = await getAttendancesService.execute({
@@ -71,6 +75,15 @@ export default async function serializeMeal({
   }
 
   // Serialize Rating
+  const getMenuRatingsService = new GetMenuRatingsService();
+
+  serializedMeal.rated = await getMenuRatingsService.execute({
+    user_id,
+    menu_id,
+    date,
+    meal_id: meal.id,
+  });
+
   serializedMeal.rating =
     serializedMeal.ratings.reduce((accumulator, current) => {
       return accumulator + current.grade;

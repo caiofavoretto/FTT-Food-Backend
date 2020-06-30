@@ -62,6 +62,7 @@ menusRouter.get('/', EnsureAuthenticated, async (request, response) => {
 
     if (serializedMenu.monday_meal) {
       serializedMenu.monday_meal = await serializeMeal({
+        menu_id: serializedMenu.id,
         meal: serializedMenu.monday_meal,
         date: serializedMenu.initial_date,
         user_id,
@@ -70,6 +71,7 @@ menusRouter.get('/', EnsureAuthenticated, async (request, response) => {
 
     if (serializedMenu.tuesday_meal) {
       serializedMenu.tuesday_meal = await serializeMeal({
+        menu_id: serializedMenu.id,
         meal: serializedMenu.tuesday_meal,
         date: addDays(serializedMenu.initial_date, 1),
         user_id,
@@ -78,6 +80,7 @@ menusRouter.get('/', EnsureAuthenticated, async (request, response) => {
 
     if (serializedMenu.wednesday_meal) {
       serializedMenu.wednesday_meal = await serializeMeal({
+        menu_id: serializedMenu.id,
         meal: serializedMenu.wednesday_meal,
         date: addDays(serializedMenu.initial_date, 2),
         user_id,
@@ -86,6 +89,7 @@ menusRouter.get('/', EnsureAuthenticated, async (request, response) => {
 
     if (serializedMenu.thursday_meal) {
       serializedMenu.thursday_meal = await serializeMeal({
+        menu_id: serializedMenu.id,
         meal: serializedMenu.thursday_meal,
         date: addDays(serializedMenu.initial_date, 3),
         user_id,
@@ -94,6 +98,7 @@ menusRouter.get('/', EnsureAuthenticated, async (request, response) => {
 
     if (serializedMenu.friday_meal) {
       serializedMenu.friday_meal = await serializeMeal({
+        menu_id: serializedMenu.id,
         meal: serializedMenu.friday_meal,
         date: addDays(serializedMenu.initial_date, 4),
         user_id,
