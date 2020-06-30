@@ -1,7 +1,9 @@
 import { getRepository } from 'typeorm';
 import path from 'path';
 import fs from 'fs';
+
 import Food from '../models/Food';
+
 import uploadConfig from '../config/upload';
 import AppError from '../errors/AppError';
 
@@ -44,6 +46,7 @@ class UpdateFoodService {
     }
 
     foodExists.image_url = imageFileName;
+    foodExists.updated_at = new Date();
 
     await foodsRepository.save(foodExists);
 

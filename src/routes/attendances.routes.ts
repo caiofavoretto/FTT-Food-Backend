@@ -1,9 +1,11 @@
 import { Router } from 'express';
+import { isUuid } from 'uuidv4';
 import { parseISO } from 'date-fns';
 
 import GetAttendancesService from '../services/GetAttendancesService';
 import CreateAttendanceSevice from '../services/CreateAttendanceService';
 import DeleteAttendanceService from '../services/DeleteAttendanceService';
+import AppError from '../errors/AppError';
 
 const attendanceRouter = Router();
 
@@ -33,6 +35,10 @@ attendanceRouter.get('/', async (request, response) => {
 
 attendanceRouter.delete('/:id', async (request, response) => {
   const { id } = request.params;
+
+  if (!isUuid(id)) {
+    throw new AppError('Id invalido');
+  }
 
   const deleteAttendanceService = new DeleteAttendanceService();
 

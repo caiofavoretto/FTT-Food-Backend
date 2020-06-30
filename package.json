@@ -4,7 +4,7 @@
   "main": "dist/server.js",
   "license": "MIT",
   "engines": {
-    "node": "12.17.0",
+    "node": "12.18.1",
     "yarn": "1.22.4"
   },
   "scripts": {
@@ -17,7 +17,7 @@
     "dev:server": "ts-node-dev --inspect --transpileOnly --ignore-watch node_modules src/server.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js",
     "typeormb": "node ./node_modules/typeorm/cli.js",
-    "seed:generate": "ts-node-dev ./node_modules/typeorm/cli.js migration:create -c seed",
+    "seed:create": "ts-node-dev ./node_modules/typeorm/cli.js migration:create -c seed",
     "seed:run": "ts-node-dev ./node_modules/typeorm/cli.js migration:run -c seed",
     "seedb:run": "node ./node_modules/typeorm/cli.js migration:run -c seed",
     "seed:revert": "ts-node-dev ./node_modules/typeorm/cli.js migration:revert -c seed"

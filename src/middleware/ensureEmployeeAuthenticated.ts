@@ -23,8 +23,7 @@ export default function ensureAuthenticated(
   const [, token] = authHeader.split(' ');
 
   try {
-    const decoded = verify(token, `${process.env.SECRET}`);
-
+    const decoded = verify(token, `${process.env.SECRET_BACKOFFICE}`);
     const { sub } = decoded as TokenPayLoad;
 
     request.user = {
@@ -33,18 +32,6 @@ export default function ensureAuthenticated(
 
     return next();
   } catch {
-    try {
-      const decoded = verify(token, `${process.env.SECRET_BACKOFFICE}`);
-
-      const { sub } = decoded as TokenPayLoad;
-
-      request.user = {
-        id: sub,
-      };
-
-      return next();
-    } catch {
-      throw new AppError('Token JWT inválido.', 401);
-    }
+    throw new AppError('Token JWT inválido.', 401);
   }
 }
