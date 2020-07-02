@@ -1,5 +1,6 @@
 /* eslint-disable import/no-duplicates */
 import { format, parseISO } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 import pt from 'date-fns/locale/pt';
 
 import GetAttendancesService from '../services/GetAttendancesService';
@@ -22,8 +23,10 @@ export default async function serializeMeal({
 }: Params): Promise<Meal> {
   const serializedMeal = meal;
 
+  const parsedDate = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+
   // Serialize dates
-  const today = format(new Date(), 'yyyy-MM-dd', {
+  const today = format(parsedDate, 'yyyy-MM-dd', {
     locale: pt,
   });
 
