@@ -49,6 +49,7 @@ menusRouter.post(
 );
 
 menusRouter.get('/', EnsureAuthenticated, async (request, response) => {
+  console.log('start');
   const date = request.query.date as string;
 
   const user_id = request.user.id;
