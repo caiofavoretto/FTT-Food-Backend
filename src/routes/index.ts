@@ -17,7 +17,7 @@ import EnsureEmployeeAuthenticated from '../middleware/ensureEmployeeAuthenticat
 
 const routes = Router();
 
-routes.use('/users', UserRouter);
+routes.use('/users', EnsureEmployeeAuthenticated, UserRouter);
 routes.use('/profiles', EnsureAuthenticated, ProfileRouter);
 routes.use('/roles', EnsureEmployeeAuthenticated, RolesRouter);
 routes.use('/genders', EnsureEmployeeAuthenticated, GendersRouter);
