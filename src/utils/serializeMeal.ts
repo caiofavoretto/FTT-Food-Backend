@@ -30,7 +30,7 @@ export default async function serializeMeal({
     locale: pt,
   });
 
-  const dayOfTheWeek = format(new Date(), 'eeee', {
+  const dayOfTheWeek = format(parsedDate, 'eeee', {
     useAdditionalWeekYearTokens: true,
     locale: pt,
   });
