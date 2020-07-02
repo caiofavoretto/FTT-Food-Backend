@@ -31,12 +31,22 @@ menusRouter.post(
       friday_meal_id,
     } = request.body;
 
+    const parsedInitialDate = utcToZonedTime(
+      parseISO(initial_date),
+      'America/Sao_Paulo'
+    );
+
+    const parsedEndDate = utcToZonedTime(
+      parseISO(end_date),
+      'America/Sao_Paulo'
+    );
+
     const createMenuService = new CreateMenuService();
 
     const menu = await createMenuService.execute({
       description,
-      initial_date: parseISO(initial_date),
-      end_date: parseISO(end_date),
+      initial_date: parsedInitialDate,
+      end_date: parsedEndDate,
       monday_meal_id,
       tuesday_meal_id,
       wednesday_meal_id,
@@ -55,20 +65,16 @@ menusRouter.get('/', EnsureAuthenticated, async (request, response) => {
 
   const getMenusService = new GetMenusService();
 
+  const parsedDate = date
+    ? utcToZonedTime(parseISO(date), 'America/Sao_Paulo')
+    : null;
+
   const menus = await getMenusService.execute({
-    date: date ? parseISO(date) : null,
+    date: parsedDate,
   });
 
   const serializedmenusPromise = menus.map(async menu => {
     const serializedMenu = menu;
-    serializedMenu.initial_date = utcToZonedTime(
-      serializedMenu.initial_date,
-      'America/Sao_Paulo'
-    );
-    serializedMenu.end_date = utcToZonedTime(
-      serializedMenu.end_date,
-      'America/Sao_Paulo'
-    );
 
     if (serializedMenu.monday_meal) {
       serializedMenu.monday_meal = await serializeMeal({
@@ -144,13 +150,23 @@ menusRouter.patch(
       friday_meal_id,
     } = request.body;
 
+    const parsedInitialDate = utcToZonedTime(
+      parseISO(initial_date),
+      'America/Sao_Paulo'
+    );
+
+    const parsedEndDate = utcToZonedTime(
+      parseISO(end_date),
+      'America/Sao_Paulo'
+    );
+
     const updateMenuService = new UpdateMenuService();
 
     const menu = await updateMenuService.execute({
       id,
       description,
-      initial_date: parseISO(initial_date),
-      end_date: parseISO(end_date),
+      initial_date: parsedInitialDate,
+      end_date: parsedEndDate,
       monday_meal_id,
       tuesday_meal_id,
       wednesday_meal_id,

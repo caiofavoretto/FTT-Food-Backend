@@ -1,4 +1,6 @@
 import { getRepository } from 'typeorm';
+import { utcToZonedTime } from 'date-fns-tz';
+
 import path from 'path';
 import fs from 'fs';
 
@@ -29,7 +31,7 @@ class DeleteUserService {
       }
     }
 
-    user.deleted_at = new Date();
+    user.deleted_at = utcToZonedTime(new Date(), 'America/Sao_Paulo');
 
     await usersRepository.save(user);
   }

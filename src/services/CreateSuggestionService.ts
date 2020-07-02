@@ -1,5 +1,7 @@
 import { getRepository, Between } from 'typeorm';
 import { startOfDay, endOfDay, isWeekend } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
+
 import AppError from '../errors/AppError';
 import Suggestion from '../models/Suggestion';
 import Food from '../models/Food';
@@ -21,17 +23,19 @@ class CreateSuggestionService {
 
     const suggestionRepository = getRepository(Suggestion);
 
+    const parsedDate = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+
     const suggestionExist = await suggestionRepository.findOne({
       where: {
         user_id,
-        created_at: Between(startOfDay(new Date()), endOfDay(new Date())),
+        created_at: Between(startOfDay(parsedDate), endOfDay(parsedDate)),
       },
     });
 
     if (suggestionExist) {
       throw new AppError('Você só pode sugerir uma comida por dia.');
     }
-    if (isWeekend(new Date())) {
+    if (isWeekend(parsedDate)) {
       throw new AppError('Você só pode sugerir uma comida em dias úteis.');
     }
 

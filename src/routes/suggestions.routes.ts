@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { getRepository, Between } from 'typeorm';
 import { startOfDay, endOfDay } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
+
 import { isUuid } from 'uuidv4';
 
 import CreateSuggestionService from '../services/CreateSuggestionService';
@@ -32,10 +34,12 @@ suggestionRouter.get(
 
     const suggestionRepository = getRepository(Suggestion);
 
+    const parsedDate = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+
     const suggestion = await suggestionRepository.findOne({
       where: {
         user_id,
-        created_at: Between(startOfDay(new Date()), endOfDay(new Date())),
+        created_at: Between(startOfDay(parsedDate), endOfDay(parsedDate)),
       },
     });
 

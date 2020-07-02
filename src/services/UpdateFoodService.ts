@@ -1,4 +1,6 @@
 import { getRepository } from 'typeorm';
+import { utcToZonedTime } from 'date-fns-tz';
+
 import path from 'path';
 import fs from 'fs';
 
@@ -46,7 +48,7 @@ class UpdateFoodService {
     }
 
     foodExists.image_url = imageFileName;
-    foodExists.updated_at = new Date();
+    foodExists.updated_at = utcToZonedTime(new Date(), 'America/Sao_Paulo');
 
     await foodsRepository.save(foodExists);
 

@@ -1,5 +1,7 @@
 import { getRepository, Between } from 'typeorm';
 import { startOfDay, endOfDay } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
+
 import Attendance from '../models/Attendance';
 import AppError from '../errors/AppError';
 
@@ -11,10 +13,12 @@ class CreateAttendancesService {
   public async execute({ user_id }: Request): Promise<Attendance> {
     const attendanceRepository = getRepository(Attendance);
 
+    const parsedDate = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+
     const attendanceExists = await attendanceRepository.find({
       where: {
         user_id,
-        date: Between(startOfDay(new Date()), endOfDay(new Date())),
+        date: Between(startOfDay(parsedDate), endOfDay(parsedDate)),
       },
     });
 
