@@ -1,9 +1,9 @@
 import { getRepository } from 'typeorm';
-import { utcToZonedTime } from 'date-fns-tz';
 
 import User from '../../models/User';
 
 import AppError from '../../errors/AppError';
+import parseDateTimeZone from '../../utils/parseDateTimeZone';
 
 interface Request {
   id: string;
@@ -23,7 +23,7 @@ class UpdateUserEmailService {
     }
 
     user.email = email;
-    user.updated_at = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+    user.updated_at = parseDateTimeZone(new Date());
 
     await usersRepository.save(user);
 

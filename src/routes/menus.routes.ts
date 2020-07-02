@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { addDays, parseISO } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
 
 import { isUuid } from 'uuidv4';
 import AppError from '../errors/AppError';
@@ -13,6 +12,7 @@ import GetMenusService from '../services/GetMenusService';
 import EnsureAuthenticated from '../middleware/ensureAuthenticated';
 import EnsureEmployeeAuthenticated from '../middleware/ensureEmployeeAuthenticated';
 import serializeMeal from '../utils/serializeMeal';
+import parseDateTimeZone from '../utils/parseDateTimeZone';
 
 const menusRouter = Router();
 
@@ -31,22 +31,12 @@ menusRouter.post(
       friday_meal_id,
     } = request.body;
 
-    const parsedInitialDate = utcToZonedTime(
-      parseISO(initial_date),
-      'America/Sao_Paulo'
-    );
-
-    const parsedEndDate = utcToZonedTime(
-      parseISO(end_date),
-      'America/Sao_Paulo'
-    );
-
     const createMenuService = new CreateMenuService();
 
     const menu = await createMenuService.execute({
       description,
-      initial_date: parsedInitialDate,
-      end_date: parsedEndDate,
+      initial_date: parseDateTimeZone(initial_date),
+      end_date: parseDateTimeZone(end_date),
       monday_meal_id,
       tuesday_meal_id,
       wednesday_meal_id,
@@ -65,9 +55,7 @@ menusRouter.get('/', EnsureAuthenticated, async (request, response) => {
 
   const getMenusService = new GetMenusService();
 
-  const parsedDate = date
-    ? utcToZonedTime(parseISO(date), 'America/Sao_Paulo')
-    : null;
+  const parsedDate = date ? parseDateTimeZone(date) : null;
 
   const menus = await getMenusService.execute({
     date: parsedDate,
@@ -150,23 +138,13 @@ menusRouter.patch(
       friday_meal_id,
     } = request.body;
 
-    const parsedInitialDate = utcToZonedTime(
-      parseISO(initial_date),
-      'America/Sao_Paulo'
-    );
-
-    const parsedEndDate = utcToZonedTime(
-      parseISO(end_date),
-      'America/Sao_Paulo'
-    );
-
     const updateMenuService = new UpdateMenuService();
 
     const menu = await updateMenuService.execute({
       id,
       description,
-      initial_date: parsedInitialDate,
-      end_date: parsedEndDate,
+      initial_date: parseDateTimeZone(initial_date),
+      end_date: parseDateTimeZone(end_date),
       monday_meal_id,
       tuesday_meal_id,
       wednesday_meal_id,

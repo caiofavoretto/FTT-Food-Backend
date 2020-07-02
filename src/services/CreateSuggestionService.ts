@@ -1,10 +1,10 @@
 import { getRepository, Between } from 'typeorm';
 import { startOfDay, endOfDay, isWeekend } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
 
 import AppError from '../errors/AppError';
 import Suggestion from '../models/Suggestion';
 import Food from '../models/Food';
+import parseDateTimeZone from '../utils/parseDateTimeZone';
 
 interface Request {
   user_id: string;
@@ -23,7 +23,7 @@ class CreateSuggestionService {
 
     const suggestionRepository = getRepository(Suggestion);
 
-    const parsedDate = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+    const parsedDate = parseDateTimeZone(new Date());
 
     const suggestionExist = await suggestionRepository.findOne({
       where: {

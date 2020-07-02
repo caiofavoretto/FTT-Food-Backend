@@ -1,11 +1,11 @@
 import { getRepository, Between, Equal, Not, In } from 'typeorm';
 import { differenceInCalendarDays } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
 
 import Menu from '../models/Menu';
 import Meal from '../models/Meal';
 
 import AppError from '../errors/AppError';
+import parseDateTimeZone from '../utils/parseDateTimeZone';
 
 interface Request {
   id: string;
@@ -126,7 +126,7 @@ class UpdateMenuService {
       menu.friday_meal = null;
     }
 
-    menu.updated_at = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+    menu.updated_at = parseDateTimeZone(new Date());
 
     await menusRepository.save(menu);
 

@@ -1,5 +1,4 @@
 import { getRepository } from 'typeorm';
-import { utcToZonedTime } from 'date-fns-tz';
 
 import path from 'path';
 import fs from 'fs';
@@ -7,6 +6,7 @@ import fs from 'fs';
 import User from '../../models/User';
 import uploadConfig from '../../config/upload';
 import AppError from '../../errors/AppError';
+import parseDateTimeZone from '../../utils/parseDateTimeZone';
 
 class DeleteUserService {
   public async execute(id: string): Promise<void> {
@@ -31,7 +31,7 @@ class DeleteUserService {
       }
     }
 
-    user.deleted_at = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+    user.deleted_at = parseDateTimeZone(new Date());
 
     await usersRepository.save(user);
   }

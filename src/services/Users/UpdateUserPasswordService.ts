@@ -1,11 +1,11 @@
 import { getRepository } from 'typeorm';
-import { utcToZonedTime } from 'date-fns-tz';
 
 import { hash, compare } from 'bcryptjs';
 
 import User from '../../models/User';
 
 import AppError from '../../errors/AppError';
+import parseDateTimeZone from '../../utils/parseDateTimeZone';
 
 interface Request {
   id: string;
@@ -38,7 +38,7 @@ class UpdateUserPasswordService {
     const password_hash = await hash(password, 8);
 
     user.password_hash = password_hash;
-    user.updated_at = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+    user.updated_at = parseDateTimeZone(new Date());
 
     await usersRepository.save(user);
 

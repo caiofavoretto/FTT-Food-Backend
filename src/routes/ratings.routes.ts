@@ -1,7 +1,6 @@
 /* eslint-disable import/no-duplicates */
 import { Router } from 'express';
 import { parseISO } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
 
 import { getRepository } from 'typeorm';
 
@@ -14,6 +13,7 @@ import Rating from '../models/Rating';
 import Meal from '../models/Meal';
 import serializeMeal from '../utils/serializeMeal';
 import AppError from '../errors/AppError';
+import parseDateTimeZone from '../utils/parseDateTimeZone';
 
 const ratingRouter = Router();
 
@@ -35,14 +35,12 @@ ratingRouter.post('/', EnsureAuthenticated, async (request, response) => {
 
   const createRatingService = new CreateRatingService();
 
-  const parsedDate = utcToZonedTime(parseISO(date), 'America/Sao_Paulo');
-
   await createRatingService.execute({
     user_id,
     meal_id,
     grade,
     menu_id,
-    date: parsedDate,
+    date: parseDateTimeZone(date),
   });
 
   const mealsRepository = getRepository(Meal);
