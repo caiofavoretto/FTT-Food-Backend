@@ -1,4 +1,6 @@
 import { getRepository, In } from 'typeorm';
+import { utcToZonedTime } from 'date-fns-tz';
+
 import path from 'path';
 import fs from 'fs';
 
@@ -44,7 +46,7 @@ class UpdateMealService {
 
     meal.description = description;
     meal.foods = foodEntities;
-    meal.updated_at = new Date();
+    meal.updated_at = utcToZonedTime(new Date(), 'America/Sao_Paulo');
 
     if (meal.image_url) {
       const mealImageFilePath = path.join(

@@ -1,5 +1,7 @@
 import { getRepository, Between, Equal, Not, In } from 'typeorm';
 import { differenceInCalendarDays } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
+
 import Menu from '../models/Menu';
 import Meal from '../models/Meal';
 
@@ -124,7 +126,7 @@ class UpdateMenuService {
       menu.friday_meal = null;
     }
 
-    menu.updated_at = new Date();
+    menu.updated_at = utcToZonedTime(new Date(), 'America/Sao_Paulo');
 
     await menusRepository.save(menu);
 

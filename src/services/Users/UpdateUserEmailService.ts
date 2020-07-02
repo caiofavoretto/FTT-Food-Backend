@@ -1,4 +1,5 @@
 import { getRepository } from 'typeorm';
+import { utcToZonedTime } from 'date-fns-tz';
 
 import User from '../../models/User';
 
@@ -22,7 +23,7 @@ class UpdateUserEmailService {
     }
 
     user.email = email;
-    user.updated_at = new Date();
+    user.updated_at = utcToZonedTime(new Date(), 'America/Sao_Paulo');
 
     await usersRepository.save(user);
 

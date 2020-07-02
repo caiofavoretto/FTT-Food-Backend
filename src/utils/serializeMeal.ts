@@ -55,9 +55,14 @@ export default async function serializeMeal({
   // Serialize attendance
   const getAttendancesService = new GetAttendancesService();
 
+  const parsedMealDate = utcToZonedTime(
+    parseISO(serializedMeal.date),
+    'America/Sao_Paulo'
+  );
+
   const attendant = await getAttendancesService.execute({
     user_id,
-    date: parseISO(serializedMeal.date),
+    date: parsedMealDate,
   });
 
   serializedMeal.attendant = attendant[0]?.id || '';

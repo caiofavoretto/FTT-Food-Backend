@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { isUuid } from 'uuidv4';
 import { parseISO } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 
 import GetAttendancesService from '../services/GetAttendancesService';
 import CreateAttendanceSevice from '../services/CreateAttendanceService';
@@ -25,9 +26,13 @@ attendanceRouter.get('/', async (request, response) => {
 
   const getAttendancesService = new GetAttendancesService();
 
+  const parsedDate = date
+    ? utcToZonedTime(parseISO(date), 'America/Sao_Paulo')
+    : null;
+
   const attendances = await getAttendancesService.execute({
     user_id,
-    date: date ? parseISO(date) : null,
+    date: parsedDate,
   });
 
   return response.json(attendances);
