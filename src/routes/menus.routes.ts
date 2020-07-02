@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { addDays, parseISO } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
+
 import { isUuid } from 'uuidv4';
 import AppError from '../errors/AppError';
 
@@ -59,6 +61,14 @@ menusRouter.get('/', EnsureAuthenticated, async (request, response) => {
 
   const serializedmenusPromise = menus.map(async menu => {
     const serializedMenu = menu;
+    serializedMenu.initial_date = utcToZonedTime(
+      serializedMenu.initial_date,
+      'America/Sao_Paulo'
+    );
+    serializedMenu.end_date = utcToZonedTime(
+      serializedMenu.end_date,
+      'America/Sao_Paulo'
+    );
 
     if (serializedMenu.monday_meal) {
       serializedMenu.monday_meal = await serializeMeal({
