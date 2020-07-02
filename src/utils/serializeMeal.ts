@@ -1,5 +1,5 @@
 /* eslint-disable import/no-duplicates */
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
 import GetAttendancesService from '../services/GetAttendancesService';
