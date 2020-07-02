@@ -1,5 +1,4 @@
 import { getRepository } from 'typeorm';
-import { utcToZonedTime } from 'date-fns-tz';
 
 import path from 'path';
 import fs from 'fs';
@@ -8,6 +7,7 @@ import User from '../../models/User';
 
 import uploadConfig from '../../config/upload';
 import AppError from '../../errors/AppError';
+import parseDateTimeZone from '../../utils/parseDateTimeZone';
 
 interface Request {
   id: string;
@@ -60,7 +60,7 @@ class UpdateUserService {
     }
 
     user.avatar_url = avatarFileName;
-    user.updated_at = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+    user.updated_at = parseDateTimeZone(new Date());
 
     await usersRepository.save(user);
 

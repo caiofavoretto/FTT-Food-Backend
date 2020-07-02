@@ -1,5 +1,4 @@
 import { getRepository } from 'typeorm';
-import { utcToZonedTime } from 'date-fns-tz';
 
 import path from 'path';
 import fs from 'fs';
@@ -8,6 +7,7 @@ import Food from '../models/Food';
 
 import uploadConfig from '../config/upload';
 import AppError from '../errors/AppError';
+import parseDateTimeZone from '../utils/parseDateTimeZone';
 
 interface Request {
   id: string;
@@ -48,7 +48,7 @@ class UpdateFoodService {
     }
 
     foodExists.image_url = imageFileName;
-    foodExists.updated_at = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+    foodExists.updated_at = parseDateTimeZone(new Date());
 
     await foodsRepository.save(foodExists);
 

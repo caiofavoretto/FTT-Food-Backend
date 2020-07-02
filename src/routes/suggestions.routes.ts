@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { getRepository, Between } from 'typeorm';
 import { startOfDay, endOfDay } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
 
 import { isUuid } from 'uuidv4';
 
@@ -11,6 +10,7 @@ import EnsureAuthenticated from '../middleware/ensureAuthenticated';
 
 import Suggestion from '../models/Suggestion';
 import AppError from '../errors/AppError';
+import parseDateTimeZone from '../utils/parseDateTimeZone';
 
 const suggestionRouter = Router();
 
@@ -34,7 +34,7 @@ suggestionRouter.get(
 
     const suggestionRepository = getRepository(Suggestion);
 
-    const parsedDate = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+    const parsedDate = parseDateTimeZone(new Date());
 
     const suggestion = await suggestionRepository.findOne({
       where: {

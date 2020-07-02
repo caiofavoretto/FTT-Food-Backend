@@ -1,12 +1,12 @@
 /* eslint-disable import/no-duplicates */
 import { format, parseISO } from 'date-fns';
-import { utcToZonedTime } from 'date-fns-tz';
 import pt from 'date-fns/locale/pt';
 
 import GetAttendancesService from '../services/GetAttendancesService';
 import GetMenuRatingsService from '../services/GetMenuRatingsService';
 
 import Meal from '../models/Meal';
+import parseDateTimeZone from './parseDateTimeZone';
 
 interface Params {
   meal: Meal;
@@ -23,7 +23,7 @@ export default async function serializeMeal({
 }: Params): Promise<Meal> {
   const serializedMeal = meal;
 
-  const parsedDate = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+  const parsedDate = parseDateTimeZone(new Date());
 
   // Serialize dates
   const today = format(parsedDate, 'yyyy-MM-dd', {
@@ -55,14 +55,9 @@ export default async function serializeMeal({
   // Serialize attendance
   const getAttendancesService = new GetAttendancesService();
 
-  const parsedMealDate = utcToZonedTime(
-    parseISO(serializedMeal.date),
-    'America/Sao_Paulo'
-  );
-
   const attendant = await getAttendancesService.execute({
     user_id,
-    date: parsedMealDate,
+    date: parseDateTimeZone(serializedMeal.date),
   });
 
   serializedMeal.attendant = attendant[0]?.id || '';

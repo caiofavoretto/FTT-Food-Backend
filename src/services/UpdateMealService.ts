@@ -1,5 +1,4 @@
 import { getRepository, In } from 'typeorm';
-import { utcToZonedTime } from 'date-fns-tz';
 
 import path from 'path';
 import fs from 'fs';
@@ -9,6 +8,7 @@ import Food from '../models/Food';
 
 import uploadConfig from '../config/upload';
 import AppError from '../errors/AppError';
+import parseDateTimeZone from '../utils/parseDateTimeZone';
 
 interface Request {
   id: string;
@@ -46,7 +46,7 @@ class UpdateMealService {
 
     meal.description = description;
     meal.foods = foodEntities;
-    meal.updated_at = utcToZonedTime(new Date(), 'America/Sao_Paulo');
+    meal.updated_at = parseDateTimeZone(new Date());
 
     if (meal.image_url) {
       const mealImageFilePath = path.join(
