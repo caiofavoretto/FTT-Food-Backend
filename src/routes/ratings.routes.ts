@@ -1,6 +1,4 @@
-/* eslint-disable import/no-duplicates */
 import { Router } from 'express';
-import { parseISO } from 'date-fns';
 
 import { getRepository } from 'typeorm';
 
@@ -52,7 +50,7 @@ ratingRouter.post('/', EnsureAuthenticated, async (request, response) => {
   }
 
   const serializedMeal = await serializeMeal({
-    date: parsedDate,
+    date: parseDateTimeZone(date),
     meal,
     menu_id,
     user_id,

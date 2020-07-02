@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addDays, parseISO } from 'date-fns';
+import { addDays } from 'date-fns';
 
 import { isUuid } from 'uuidv4';
 import AppError from '../errors/AppError';

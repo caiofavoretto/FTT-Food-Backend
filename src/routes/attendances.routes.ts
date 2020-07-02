@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import { isUuid } from 'uuidv4';
-import { parseISO } from 'date-fns';
 
 import GetAttendancesService from '../services/GetAttendancesService';
 import CreateAttendanceSevice from '../services/CreateAttendanceService';
